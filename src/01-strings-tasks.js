@@ -225,10 +225,11 @@ function getRectangleString(/* width, height */) {
  *    => 'NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm'
  *
  */
-function encodeToRot13(str) {
-  const splitted = str.split('');
-  const converted = splitted.map((letter) => String.fromCharCode(letter.charCodeAt(0) + 13));
-  return converted.join('');
+function encodeToRot13(/* str */) {
+  throw new Error('Not implemented');
+  // const splitted = str.split('');
+  // const converted = splitted.map((letter) => String.fromCharCode(letter.charCodeAt(0) + 13));
+  // return converted.join('');
 }
 
 /**
