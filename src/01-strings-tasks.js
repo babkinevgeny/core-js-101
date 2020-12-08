@@ -204,8 +204,54 @@ function extractEmails(str) {
  *             '└──────────┘\n'
  *
  */
-function getRectangleString(/* width, height */) {
-  throw new Error('Not implemented');
+function getRectangleString(width, height) {
+  const leftTop = '┌';
+  const rightTop = '┐\n';
+  const leftBottom = '└';
+  const rightBottom = '┘\n';
+  const horisontalLine = '─';
+  const verticalLine = '│';
+  const space = ' ';
+
+  const rows = [];
+
+  for (let rowIndex = 0; rowIndex < height; rowIndex += 1) {
+    let row = '';
+    if (rowIndex === 0) { // first row
+      for (let colIndex = 0; colIndex < width; colIndex += 1) {
+        if (colIndex === 0) {
+          row += leftTop;
+        } else if (colIndex === width - 1) {
+          row += rightTop;
+        } else {
+          row += horisontalLine;
+        }
+      }
+    } else if (rowIndex === height - 1) { // last row
+      for (let colIndex = 0; colIndex < width; colIndex += 1) {
+        if (colIndex === 0) {
+          row += leftBottom;
+        } else if (colIndex === width - 1) {
+          row += rightBottom;
+        } else {
+          row += horisontalLine;
+        }
+      }
+    } else {
+      for (let colIndex = 0; colIndex < width; colIndex += 1) {
+        if (colIndex === 0) {
+          row += verticalLine;
+        } else if (colIndex === width - 1) {
+          row = `${row + verticalLine}\n`;
+        } else {
+          row += space;
+        }
+      }
+    }
+    rows.push(row);
+  }
+
+  return rows.join('');
 }
 
 
@@ -225,11 +271,23 @@ function getRectangleString(/* width, height */) {
  *    => 'NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm'
  *
  */
-function encodeToRot13(/* str */) {
-  throw new Error('Not implemented');
-  // const splitted = str.split('');
-  // const converted = splitted.map((letter) => String.fromCharCode(letter.charCodeAt(0) + 13));
-  // return converted.join('');
+function encodeToRot13(str) {
+  const code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+  const decode = 'NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm';
+  const decoded = [];
+  for (let i = 0; i < str.length; i += 1) {
+    const letter = str[i];
+    const indexInCode = code.indexOf(letter);
+    const isUpperCase = letter.charCodeAt(0) > 64 && letter.charCodeAt(0) < 91;
+    const isLowerCase = letter.charCodeAt(0) > 96 && letter.charCodeAt(0) < 123;
+    if (isUpperCase || isLowerCase) {
+      decoded.push(decode[indexInCode]);
+    } else {
+      decoded.push(letter);
+    }
+  }
+
+  return decoded.join('');
 }
 
 /**
