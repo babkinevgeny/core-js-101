@@ -73,8 +73,14 @@ function isLeapYear(date) {
  *    Date(2000,1,1,10,0,0),  Date(2000,1,1,10,0,0,250)     => "00:00:00.250"
  *    Date(2000,1,1,10,0,0),  Date(2000,1,1,15,20,10,453)   => "05:20:10.453"
  */
-function timeSpanToString(/* startDate, endDate */) {
-  throw new Error('Not implemented');
+function timeSpanToString(startDate, endDate) {
+  const diffTime = Math.abs(startDate - endDate);
+  const date = new Date();
+  date.setTime(diffTime);
+  const str = date.toISOString();
+  const arr = str.split('T');
+  const timeStr = arr[1];
+  return timeStr.substring(0, timeStr.length - 1);
 }
 
 
@@ -94,8 +100,28 @@ function timeSpanToString(/* startDate, endDate */) {
  *    Date.UTC(2016,3,5,18, 0) => Math.PI
  *    Date.UTC(2016,3,5,21, 0) => Math.PI/2
  */
-function angleBetweenClockHands(/* date */) {
-  throw new Error('Not implemented');
+function angleBetweenClockHands(date) {
+  const msInDay = 24 * 60 * 60 * 1000;
+  const timeOnClockMs = date % msInDay;
+
+  if (!msInDay) {
+    return 0;
+  }
+
+  const msInMinute = 60 * 1000;
+  const msInHour = 60 * msInMinute;
+
+  const hours = Math.floor(timeOnClockMs / msInHour);
+  const minutes = Math.floor((timeOnClockMs - hours * msInHour) / msInMinute);
+
+  let angleDeg = 0.5 * (60 * hours + minutes) - 6 * minutes;
+
+  while (angleDeg > 180) {
+    angleDeg = Math.abs(360 - angleDeg);
+  }
+
+  const rads = (angleDeg * Math.PI) / 180;
+  return rads;
 }
 
 
