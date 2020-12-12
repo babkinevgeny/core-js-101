@@ -420,8 +420,8 @@ function isBracketsBalanced(/* str */) {
  *    365, 4  => '11231'
  *    365, 10 => '365'
  */
-function toNaryString(/* num, n */) {
-  throw new Error('Not implemented');
+function toNaryString(num, n) {
+  return +num.toString(n);
 }
 
 
@@ -437,8 +437,45 @@ function toNaryString(/* num, n */) {
  *   ['/web/assets/style.css', '/.bin/mocha',  '/read.me'] => '/'
  *   ['/web/favicon.ico', '/web-scripts/dump', '/webalizer/logs'] => '/'
  */
-function getCommonDirectoryPath(/* pathes */) {
-  throw new Error('Not implemented');
+function getCommonDirectoryPath(pathes) {
+  const splitedPathes = pathes.map((path) => {
+    const arr = path.split('/');
+    arr.shift();
+    return arr;
+  });
+
+  const commonPath = [];
+
+  splitedPathes.sort((a, b) => a.length - b.length);
+  const smallestPath = splitedPathes[0];
+
+  const anotherPaths = splitedPathes.slice(1);
+
+  for (let i = 0; i < smallestPath.length; i += 1) {
+    const currentPart = smallestPath[i];
+    console.log(`i: ${i}`, `currentPart: ${currentPart}`);
+
+    for (let j = 0; j < anotherPaths.length; j += 1) {
+      console.log(`j: ${j}`);
+
+      const hasCommonPart = anotherPaths.every((path) => {
+        console.log(path[i], currentPart);
+        return path[i] === currentPart;
+      });
+
+      if (hasCommonPart) {
+        commonPath.push(currentPart);
+        console.log(commonPath);
+      }
+    }
+  }
+
+  if (!commonPath.length) {
+    const hasRoot = pathes.every((path) => path[0].substring(0, 1) === '/');
+    return hasRoot ? '/' : '';
+  }
+
+  return `/${commonPath.join('/')}/`;
 }
 
 

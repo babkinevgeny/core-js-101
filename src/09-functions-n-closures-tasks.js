@@ -44,8 +44,8 @@ function getComposition(/* f, g */) {
  *   power05(16) => 4
  *
  */
-function getPowerFunction(/* exponent */) {
-  throw new Error('Not implemented');
+function getPowerFunction(exponent) {
+  return (num) => num ** exponent;
 }
 
 
@@ -129,8 +129,16 @@ function retry(/* func, attempts */) {
  * cos(3.141592653589793) ends
  *
  */
-function logger(/* func, logFunc */) {
-  throw new Error('Not implemented');
+function logger(func, logFunc) {
+  return (...args) => {
+    const paramStr = args.map((el) => JSON.stringify(el)).join(',');
+    const startRow = `${func.name}(${paramStr}) starts`;
+    logFunc(startRow);
+    const res = func(...args);
+    const endRow = `${func.name}(${paramStr}) ends`;
+    logFunc(endRow);
+    return res;
+  };
 }
 
 
@@ -169,8 +177,14 @@ function partialUsingArguments(/* fn, ...args1 */) {
  *   getId4() => 7
  *   getId10() => 11
  */
-function getIdGeneratorFunction(/* startFrom */) {
-  throw new Error('Not implemented');
+function getIdGeneratorFunction(startFrom) {
+  let current = startFrom;
+
+  return () => {
+    const temp = current;
+    current += 1;
+    return temp;
+  };
 }
 
 
