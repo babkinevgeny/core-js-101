@@ -28,21 +28,14 @@
  *      .catch((error) => console.log(error.message)) // 'Error: Wrong parameter is passed!
  *                                                    //  Ask her again.';
  */
-function willYouMarryMe(/* isPositiveAnswer */) {
-  throw new Error('Not implemented');
-  // return new Promise((resolve, reject) => {
-  //   try {
-  //     if (typeof isPositiveAnswer === 'boolean') {
-  //       if (isPositiveAnswer) {
-  //         resolve('Hooray!!! She said "Yes"!');
-  //       } else {
-  //         resolve('Oh no, she said "No".');
-  //       }
-  //     }
-  //   } catch (e) {
-  //     reject(new Error('Wrong parameter is passed! Ask her again.'));
-  //   }
-  // });
+function willYouMarryMe(isPositiveAnswer) {
+  if (isPositiveAnswer) {
+    return Promise.resolve('Hooray!!! She said "Yes"!');
+  }
+  if (typeof isPositiveAnswer === 'boolean') {
+    return Promise.resolve('Oh no, she said "No".');
+  }
+  return Promise.reject(new Error('Wrong parameter is passed! Ask her again.'));
 }
 
 
@@ -61,8 +54,8 @@ function willYouMarryMe(/* isPositiveAnswer */) {
  *    })
  *
  */
-function processAllPromises(/* array */) {
-  throw new Error('Not implemented');
+function processAllPromises(array) {
+  return Promise.all(array);
 }
 
 /**
@@ -105,8 +98,31 @@ function getFastestPromise(array) {
  *    });
  *
  */
-function chainPromises(/* array, action */) {
-  throw new Error('Not implemented');
+function chainPromises(array, action) {
+  let result;
+  const promises = [...array];
+
+  const someFunction = (promise) => {
+    if (promise === undefined) {
+      return;
+    }
+
+    promise.then((data) => {
+      result = result ? action(result, data) : data;
+    }).catch(() => {
+    });
+
+    const firstPromise = promises.slice(0, 1)[0];
+    promises.splice(0, 1);
+
+    someFunction(firstPromise);
+  };
+
+  const firstPromise = promises.slice(0, 1)[0];
+  promises.splice(0, 1);
+  someFunction(firstPromise);
+
+  return new Promise((resolve) => setTimeout(() => resolve(result), 0));
 }
 
 module.exports = {
