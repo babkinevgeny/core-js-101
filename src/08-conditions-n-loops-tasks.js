@@ -379,24 +379,17 @@ function getDigitalRoot(num) {
  *   '{)' = false
  *   '{[(<{[]}>)]}' = true
  */
-function isBracketsBalanced(/* str */) {
-  throw new Error('Not implemented');
-  // if (!str) {
-  //   return true;
-  // }
-  // const first = str[0];
-  // const last = str[str.length - 1];
+function isBracketsBalanced(str) {
+  const regexp = new RegExp(/(\{\})*(<>)*(\[\])*(\(\))*/g);
+  let oldStrLen = str.length + 1;
+  let copyOfStr = str;
 
-  // const addition = first === '(' ? 1 : 2;
+  do {
+    oldStrLen = copyOfStr.length;
+    copyOfStr = copyOfStr.replace(regexp, '');
+  } while (oldStrLen > copyOfStr.length);
 
-  // const charCodeOfFirst = first.charCodeAt(0);
-  // const shouldBeLast = String.fromCharCode(charCodeOfFirst + addition);
-
-  // if (last === shouldBeLast) {
-  //   return isBracketsBalanced(str.substring(1, str.length - 1));
-  // }
-
-  // return false;
+  return copyOfStr.length === 0;
 }
 
 
@@ -453,19 +446,12 @@ function getCommonDirectoryPath(pathes) {
 
   for (let i = 0; i < smallestPath.length; i += 1) {
     const currentPart = smallestPath[i];
-    console.log(`i: ${i}`, `currentPart: ${currentPart}`);
 
     for (let j = 0; j < anotherPaths.length; j += 1) {
-      console.log(`j: ${j}`);
-
-      const hasCommonPart = anotherPaths.every((path) => {
-        console.log(path[i], currentPart);
-        return path[i] === currentPart;
-      });
+      const hasCommonPart = anotherPaths.every((path) => path[i] === currentPart);
 
       if (hasCommonPart) {
         commonPath.push(currentPart);
-        console.log(commonPath);
       }
     }
   }
@@ -497,8 +483,24 @@ function getCommonDirectoryPath(pathes) {
  *                         [ 6 ]]
  *
  */
-function getMatrixProduct(/* m1, m2 */) {
-  throw new Error('Not implemented');
+function getMatrixProduct(m1, m2) {
+  const m1NumRows = m1.length;
+  const m1NumCols = m1[0].length;
+  // const m2NumRows = m2.length;
+  const m2NumCols = m2[0].length;
+
+
+  const arrOfRows = new Array(m1NumRows);
+  for (let r = 0; r < m1NumRows; r += 1) {
+    arrOfRows[r] = new Array(m2NumCols);
+    for (let c = 0; c < m2NumCols; c += 1) {
+      arrOfRows[r][c] = 0;
+      for (let i = 0; i < m1NumCols; i += 1) {
+        arrOfRows[r][c] += m1[r][i] * m2[i][c];
+      }
+    }
+  }
+  return arrOfRows;
 }
 
 
@@ -532,8 +534,43 @@ function getMatrixProduct(/* m1, m2 */) {
  *    [    ,   ,    ]]
  *
  */
-function evaluateTicTacToePosition(/* position */) {
-  throw new Error('Not implemented');
+function evaluateTicTacToePosition(position) {
+  const { length: posLength } = position;
+  const resultObj = {};
+
+  const addRowToResultObj = (cellData) => {
+    resultObj[cellData] = {};
+    resultObj[cellData].rows = new Array(posLength).fill(0);
+    resultObj[cellData].cols = new Array(posLength).fill(0);
+    resultObj[cellData].leftDiagonal = 0;
+    resultObj[cellData].rightDiagonal = 0;
+  };
+
+  for (let rowPointer = 0; rowPointer < posLength; rowPointer += 1) {
+    for (let colPointer = 0; colPointer < posLength; colPointer += 1) {
+      const cellData = position[rowPointer][colPointer];
+
+      if (cellData) {
+        if (!resultObj[cellData]) {
+          addRowToResultObj(cellData);
+        }
+        resultObj[cellData].leftDiagonal += (rowPointer === colPointer) && 1;
+        resultObj[cellData].rightDiagonal += (rowPointer + colPointer === posLength - 1) && 1;
+        resultObj[cellData].rows[rowPointer] += 1;
+        resultObj[cellData].cols[colPointer] += 1;
+      }
+    }
+  }
+
+  return Object.keys(resultObj).find((key) => {
+    const { leftDiagonal, rightDiagonal } = resultObj[key];
+    return (
+      leftDiagonal === 3
+      || rightDiagonal === 3
+      || resultObj[key].rows.find((el) => el === 3)
+      || resultObj[key].cols.find((el) => el === 3)
+    );
+  });
 }
 
 
